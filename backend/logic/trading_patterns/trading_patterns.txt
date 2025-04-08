@@ -1,0 +1,104 @@
+1. Bull Flag
+   - Description: A strong upward move followed by a consolidation phase resembling a flag.
+   - Rules:
+     - Strong upward trend (flagpole).
+     - Consolidation in a downward-sloping channel (flag).
+     - Breakout above the flag signals continuation of the uptrend.
+
+2. Bear Flag
+   - Description: A strong downward move followed by a consolidation phase resembling a flag.
+   - Rules:
+     - Strong downward trend (flagpole).
+     - Consolidation in an upward-sloping channel (flag).
+     - Breakout below the flag signals continuation of the downtrend.
+
+3. Double Top
+   - Description: A bearish reversal pattern with two peaks at a similar price level.
+   - Rules:
+     - Price hits resistance twice and fails to break through.
+     - Confirmation occurs when the price breaks below the neckline (support level).
+
+4. Double Bottom
+   - Description: A bullish reversal pattern with two troughs at a similar price level.
+   - Rules:
+     - Price hits support twice and bounces back.
+     - Confirmation occurs when the price breaks above the neckline (resistance level).
+
+5. Head and Shoulders
+   - Description: A bearish reversal pattern with three peaks, where the middle peak is the highest.
+   - Rules:
+     - Left shoulder, head, and right shoulder form.
+     - Confirmation occurs when the price breaks below the neckline.
+
+6. Inverse Head and Shoulders
+   - Description: A bullish reversal pattern with three troughs, where the middle trough is the lowest.
+   - Rules:
+     - Left shoulder, head, and right shoulder form.
+     - Confirmation occurs when the price breaks above the neckline.
+
+7. Cup and Handle
+   - Description: A bullish continuation pattern resembling a "U" shape followed by a small consolidation.
+   - Rules:
+     - Cup forms a rounded bottom.
+     - Handle forms a small downward consolidation.
+     - Breakout above the handle signals continuation of the uptrend.
+
+8. Ascending Triangle
+   - Description: A bullish continuation pattern with a flat resistance line and rising support.
+   - Rules:
+     - Price forms higher lows while resistance remains constant.
+     - Breakout above resistance signals continuation of the uptrend.
+
+9. Descending Triangle
+   - Description: A bearish continuation pattern with a flat support line and falling resistance.
+   - Rules:
+     - Price forms lower highs while support remains constant.
+     - Breakout below support signals continuation of the downtrend.
+
+10. Symmetrical Triangle
+    - Description: A neutral continuation pattern where price converges into a triangle.
+    - Rules:
+      - Price forms lower highs and higher lows.
+      - Breakout direction determines the trend continuation.
+
+11. Rising Wedge
+    - Description: A bearish reversal pattern where price moves upward in a narrowing range.
+    - Rules:
+      - Price forms higher highs and higher lows in a converging channel.
+      - Breakout below the wedge signals a reversal.
+
+12. Falling Wedge
+    - Description: A bullish reversal pattern where price moves downward in a narrowing range.
+    - Rules:
+      - Price forms lower highs and lower lows in a converging channel.
+      - Breakout above the wedge signals a reversal.
+
+13. Rectangle Pattern
+    - Description: A continuation pattern where price moves sideways between support and resistance.
+    - Rules:
+      - Price bounces between horizontal support and resistance levels.
+      - Breakout direction determines the trend continuation.
+
+14. Pennant
+    - Description: A continuation pattern resembling a small symmetrical triangle.
+    - Rules:
+      - Strong trend (flagpole) followed by a small consolidation (pennant).
+      - Breakout in the direction of the flagpole signals continuation.
+
+15. Rounded Bottom
+    - Description: A bullish reversal pattern where price forms a "U" shape.
+    - Rules:
+      - Price gradually transitions from a downtrend to an uptrend.
+      - Breakout above resistance confirms the reversal.
+
+16. Triple Top
+    - Description: A bearish reversal pattern with three peaks at a similar price level.
+    - Rules:
+      - Price hits resistance three times and fails to break through.
+      - Confirmation occurs when the price breaks below the neckline.
+
+17. Triple Bottom
+    - Description: A bullish reversal pattern with three troughs at a similar price level.
+    - Rules:
+      - Price hits support three times and bounces back.
+      - Confirmation occurs when the price breaks above the neckline.
