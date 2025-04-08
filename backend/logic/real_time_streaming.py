@@ -3,10 +3,13 @@ import json
 import threading
 from decision_making import StockBotApp
 
+
 class RealTimeStockBot:
     def __init__(self, stock_symbol):
         self.stock_symbol = stock_symbol
-        self.ws_url = "wss://your-websocket-api-url"  # Replace with your WebSocket API URL
+        self.ws_url = (
+            "wss://your-websocket-api-url"  # Replace with your WebSocket API URL
+        )
         self.app = StockBotApp(None)  # Initialize your decision-making logic
 
     def on_message(self, ws, message):
@@ -25,10 +28,9 @@ class RealTimeStockBot:
 
     def on_open(self, ws):
         # Subscribe to the stock symbol
-        subscribe_message = json.dumps({
-            "type": "subscribe",
-            "symbol": self.stock_symbol
-        })
+        subscribe_message = json.dumps(
+            {"type": "subscribe", "symbol": self.stock_symbol}
+        )
         ws.send(subscribe_message)
 
     def start_streaming(self):
@@ -36,10 +38,11 @@ class RealTimeStockBot:
             self.ws_url,
             on_message=self.on_message,
             on_error=self.on_error,
-            on_close=self.on_close
+            on_close=self.on_close,
         )
         ws.on_open = self.on_open
         threading.Thread(target=ws.run_forever).start()
+
 
 if __name__ == "__main__":
     stock_bot = RealTimeStockBot("AAPL")  # Replace with your stock symbol

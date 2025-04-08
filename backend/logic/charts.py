@@ -7,6 +7,7 @@ from matplotlib.animation import FuncAnimation
 import pandas as pd
 import datetime
 
+
 class StockChartApp:
     def __init__(self, root):
         self.root = root
@@ -17,7 +18,9 @@ class StockChartApp:
 
     def create_widgets(self):
         # Title
-        title = ttk.Label(self.root, text="Real-Time Stock Chart", font=("Helvetica", 20))
+        title = ttk.Label(
+            self.root, text="Real-Time Stock Chart", font=("Helvetica", 20)
+        )
         title.pack(pady=10)
 
         # Stock input frame
@@ -27,7 +30,9 @@ class StockChartApp:
         self.stock_entry = ttk.Entry(input_frame, width=30)
         self.stock_entry.pack(side=tk.LEFT, padx=5)
 
-        search_button = ttk.Button(input_frame, text="Show Chart", command=self.start_chart)
+        search_button = ttk.Button(
+            input_frame, text="Show Chart", command=self.start_chart
+        )
         search_button.pack(side=tk.LEFT)
 
         # Matplotlib figure
@@ -56,7 +61,9 @@ class StockChartApp:
         def fetch_data():
             # Fetch the latest stock data
             now = datetime.datetime.now()
-            start_time = now - datetime.timedelta(minutes=5)  # Fetch last 5 minutes of data
+            start_time = now - datetime.timedelta(
+                minutes=5
+            )  # Fetch last 5 minutes of data
             data = yf.download(
                 stock_symbol,
                 start=start_time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -69,7 +76,9 @@ class StockChartApp:
             data = fetch_data()
             if not data.empty:
                 self.ax.clear()
-                self.ax.plot(data.index, data["Close"], label="Close Price", color="blue")
+                self.ax.plot(
+                    data.index, data["Close"], label="Close Price", color="blue"
+                )
                 self.ax.set_title(f"Real-Time Stock Price: {stock_symbol}")
                 self.ax.set_xlabel("Time")
                 self.ax.set_ylabel("Price")
@@ -78,6 +87,7 @@ class StockChartApp:
 
         # Use Matplotlib's FuncAnimation for real-time updates
         self.animation = FuncAnimation(self.figure, animate, interval=1000)
+
 
 if __name__ == "__main__":
     root = tk.Tk()

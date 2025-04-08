@@ -3,6 +3,7 @@ import os
 import sqlite3
 from backend.database import StockDatabase
 
+
 class TestStockDatabase(unittest.TestCase):
     def setUp(self):
         """
@@ -40,13 +41,15 @@ class TestStockDatabase(unittest.TestCase):
             macd_hist=0.12,
             recommendation="BUY",
             news_headlines="Apple launches new product.",
-            current_price=150.25
+            current_price=150.25,
         )
-        self.db.cursor.execute("SELECT * FROM stock_analysis WHERE stock_symbol = 'AAPL'")
+        self.db.cursor.execute(
+            "SELECT * FROM stock_analysis WHERE stock_symbol = 'AAPL'"
+        )
         result = self.db.cursor.fetchone()
         self.assertIsNotNone(result)
         self.assertEqual(result[1], "AAPL")  # stock_symbol
-        self.assertEqual(result[4], 0.12)   # macd_hist
+        self.assertEqual(result[4], 0.12)  # macd_hist
 
     def test_insert_trade_history(self):
         """
@@ -58,9 +61,11 @@ class TestStockDatabase(unittest.TestCase):
             action="BUY",
             price=150.25,
             quantity=10,
-            profit_loss=None
+            profit_loss=None,
         )
-        self.db.cursor.execute("SELECT * FROM trade_history WHERE stock_symbol = 'AAPL'")
+        self.db.cursor.execute(
+            "SELECT * FROM trade_history WHERE stock_symbol = 'AAPL'"
+        )
         result = self.db.cursor.fetchone()
         self.assertIsNotNone(result)
         self.assertEqual(result[3], "BUY")  # action
@@ -74,12 +79,14 @@ class TestStockDatabase(unittest.TestCase):
             stock_symbol="AAPL",
             date="2025-04-07",
             features='{"rsi": 45.2, "macd_hist": 0.12, "news_sentiment": 0.8}',
-            outcome="BUY"
+            outcome="BUY",
         )
         self.db.cursor.execute("SELECT * FROM ml_data WHERE stock_symbol = 'AAPL'")
         result = self.db.cursor.fetchone()
         self.assertIsNotNone(result)
-        self.assertEqual(result[3], '{"rsi": 45.2, "macd_hist": 0.12, "news_sentiment": 0.8}')  # features
+        self.assertEqual(
+            result[3], '{"rsi": 45.2, "macd_hist": 0.12, "news_sentiment": 0.8}'
+        )  # features
         self.assertEqual(result[4], "BUY")  # outcome
 
     def test_fetch_trade_history(self):
@@ -92,7 +99,7 @@ class TestStockDatabase(unittest.TestCase):
             action="BUY",
             price=150.25,
             quantity=10,
-            profit_loss=None
+            profit_loss=None,
         )
         trades = self.db.fetch_trade_history()
         self.assertEqual(len(trades), 1)
@@ -109,7 +116,7 @@ class TestStockDatabase(unittest.TestCase):
             macd_hist=0.12,
             recommendation="BUY",
             news_headlines="Apple launches new product.",
-            current_price=150.25
+            current_price=150.25,
         )
         analysis = self.db.fetch_stock_analysis("AAPL")
         self.assertEqual(len(analysis), 1)
@@ -123,11 +130,12 @@ class TestStockDatabase(unittest.TestCase):
             stock_symbol="AAPL",
             date="2025-04-07",
             features='{"rsi": 45.2, "macd_hist": 0.12, "news_sentiment": 0.8}',
-            outcome="BUY"
+            outcome="BUY",
         )
         ml_data = self.db.fetch_ml_data()
         self.assertEqual(len(ml_data), 1)
         self.assertEqual(ml_data[0][1], "AAPL")  # stock_symbol
+
 
 if __name__ == "__main__":
     unittest.main()

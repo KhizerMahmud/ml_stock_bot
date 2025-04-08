@@ -1,6 +1,7 @@
 import sqlite3
 import datetime
 
+
 class StockDatabase:
     def __init__(self, db_name="stock_bot.db"):
         """
@@ -15,7 +16,8 @@ class StockDatabase:
         Create tables for storing stock analysis, trades, and predictions.
         """
         # Table for storing stock analysis data
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS stock_analysis (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 stock_symbol TEXT NOT NULL,
@@ -26,10 +28,12 @@ class StockDatabase:
                 news_headlines TEXT,
                 current_price REAL
             )
-        """)
+        """
+        )
 
         # Table for storing trade history
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS trade_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 stock_symbol TEXT NOT NULL,
@@ -39,10 +43,12 @@ class StockDatabase:
                 quantity INTEGER NOT NULL,
                 profit_loss REAL
             )
-        """)
+        """
+        )
 
         # Table for storing machine learning data
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS ml_data (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 stock_symbol TEXT NOT NULL,
@@ -50,38 +56,67 @@ class StockDatabase:
                 features TEXT NOT NULL,  -- JSON string of features
                 outcome TEXT NOT NULL    -- BUY, SELL, HOLD
             )
-        """)
+        """
+        )
 
         self.conn.commit()
 
-    def insert_stock_analysis(self, stock_symbol, date, rsi, macd_hist, recommendation, news_headlines, current_price):
+    def insert_stock_analysis(
+        self,
+        stock_symbol,
+        date,
+        rsi,
+        macd_hist,
+        recommendation,
+        news_headlines,
+        current_price,
+    ):
         """
         Insert stock analysis data into the database.
         """
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             INSERT INTO stock_analysis (stock_symbol, date, rsi, macd_hist, recommendation, news_headlines, current_price)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (stock_symbol, date, rsi, macd_hist, recommendation, news_headlines, current_price))
+        """,
+            (
+                stock_symbol,
+                date,
+                rsi,
+                macd_hist,
+                recommendation,
+                news_headlines,
+                current_price,
+            ),
+        )
         self.conn.commit()
 
-    def insert_trade_history(self, stock_symbol, trade_date, action, price, quantity, profit_loss):
+    def insert_trade_history(
+        self, stock_symbol, trade_date, action, price, quantity, profit_loss
+    ):
         """
         Insert trade history data into the database.
         """
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             INSERT INTO trade_history (stock_symbol, trade_date, action, price, quantity, profit_loss)
             VALUES (?, ?, ?, ?, ?, ?)
-        """, (stock_symbol, trade_date, action, price, quantity, profit_loss))
+        """,
+            (stock_symbol, trade_date, action, price, quantity, profit_loss),
+        )
         self.conn.commit()
 
     def insert_ml_data(self, stock_symbol, date, features, outcome):
         """
         Insert machine learning data into the database.
         """
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             INSERT INTO ml_data (stock_symbol, date, features, outcome)
             VALUES (?, ?, ?, ?)
-        """, (stock_symbol, date, features, outcome))
+        """,
+            (stock_symbol, date, features, outcome),
+        )
         self.conn.commit()
 
     def fetch_trade_history(self):
@@ -95,7 +130,9 @@ class StockDatabase:
         """
         Fetch stock analysis data for a specific stock symbol.
         """
-        self.cursor.execute("SELECT * FROM stock_analysis WHERE stock_symbol = ?", (stock_symbol,))
+        self.cursor.execute(
+            "SELECT * FROM stock_analysis WHERE stock_symbol = ?", (stock_symbol,)
+        )
         return self.cursor.fetchall()
 
     def fetch_ml_data(self):
