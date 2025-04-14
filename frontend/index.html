@@ -3,133 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Stock Bot</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Smart Stock Advisor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    body.light-mode {
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      color: #000;
     }
 
-    .container {
+    body.dark-mode {
+      background: #121212;
+      color: #e0e0e0;
+    }
+
+    .stock-card {
+      max-width: 800px;
       width: 100%;
-      max-width: 600px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.05);
       overflow: hidden;
     }
 
-    header {
-      background-color: #4CAF50;
+    .stock-header {
+      background-color: #198754;
       color: white;
-      text-align: center;
-      padding: 1rem 0;
-      border-radius: 8px 8px 0 0;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    main {
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .search-section, .result-section {
-      margin-bottom: 2rem;
-    }
-
-    .search-section h2, .result-section h2 {
-      margin-top: 0;
-      color: #4CAF50;
-    }
-
-    form {
+      padding: 1.5rem;
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    input[type="text"] {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: 100%;
+    .stock-body {
+      padding: 3rem 2rem;
+      background-color: #ffffff;
     }
 
-    button {
-      padding: 0.5rem;
-      font-size: 1rem;
-      color: white;
-      background-color: #4CAF50;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+    body.dark-mode .stock-body {
+      background-color: #1e1e1e;
     }
 
-    button:hover {
-      background-color: #45a049;
+    .form-control, .btn {
+      border-radius: 0.5rem;
     }
 
-    .result-section #recommendation {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
+    .analysis-text {
+      white-space: pre-line;
     }
 
     footer {
       text-align: center;
-      padding: 1rem 0;
-      background-color: #333;
-      color: white;
-      border-radius: 0 0 8px 8px;
+      font-size: 0.9rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      color: #333;
+    }
+
+    body.dark-mode footer {
+      background: #1e1e1e;
+      border-color: #333;
+      color: #ffffff;
+    }
+
+    .news-list {
+      margin-top: 1.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .news-item {
+      border-left: 4px solid #198754;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      background-color: #f1fdf6;
+      border-radius: 0.5rem;
+    }
+
+    body.dark-mode .news-item {
+      background-color: #1e2e28;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Smart Stock Advisor</h1>
-    </header>
-    <main>
-      <section class="search-section">
-        <h2>Analyze Stock</h2>
-        <form id="stock-form">
-          <input type="text" id="stock-symbol" placeholder="Enter Stock Symbol (e.g., AAPL)" required />
-          <button type="submit">Analyze</button>
-        </form>
-      </section>
-      <section class="result-section">
-        <h2>Analysis Result</h2>
-        <div id="recommendation"></div>
-        <div id="analysis-details"></div>
-      </section>
-    </main>
-    <footer>
-      <p>&copy; 2025 Stock Bot. All rights reserved.</p>
-    </footer>
+<body class="light-mode">
+  <div class="container py-5">
+    <div class="card stock-card mx-auto">
+      <div class="stock-header">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-graph-up-arrow fs-1"></i>
+          <h1 class="mb-0">Smart Stock Advisor</h1>
+        </div>
+        <div class="form-check form-switch text-white">
+          <input class="form-check-input" type="checkbox" id="toggle-mode">
+          <label class="form-check-label" for="toggle-mode"><i id="mode-icon" class="bi bi-moon-fill"></i></label>
+        </div>
+      </div>
+      <div class="stock-body">
+        <div class="mb-5">
+          <h4 class="text-success mb-3">📈 Analyze Stock</h4>
+          <form id="stock-form">
+            <div class="mb-3">
+              <input type="text" id="stock-symbol" class="form-control" placeholder="Enter Stock Symbol (e.g., AAPL)" required />
+            </div>
+            <div class="mb-3">
+              <button type="submit" class="btn btn-success w-100">
+                <i class="bi bi-search"></i> Analyze
+              </button>
+            </div>
+          </form>
+        </div>
+        <hr class="my-4">
+        <div>
+          <h4 class="text-success mb-3">🧠 Analysis Result</h4>
+          <div id="recommendation" class="fw-bold my-3 text-primary"></div>
+          <div id="analysis-details" class="analysis-text mb-4"></div>
+          <div id="news-headlines" class="news-list"></div>
+        </div>
+      </div>
+      <footer>
+        &copy; 2025 Stock Bot. All rights reserved.
+      </footer>
+    </div>
   </div>
 
   <script>
+    const modeToggle = document.getElementById('toggle-mode');
+    const body = document.body;
+    const icon = document.getElementById('mode-icon');
+
+    modeToggle.addEventListener('change', () => {
+      body.classList.toggle('dark-mode');
+      body.classList.toggle('light-mode');
+
+      if (body.classList.contains('dark-mode')) {
+        icon.classList.remove('bi-moon-fill');
+        icon.classList.add('bi-sun-fill');
+      } else {
+        icon.classList.remove('bi-sun-fill');
+        icon.classList.add('bi-moon-fill');
+      }
+    });
+
     document.getElementById('stock-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const symbol = document.getElementById('stock-symbol').value.toUpperCase();
       const recommendationDiv = document.getElementById('recommendation');
       const detailsDiv = document.getElementById('analysis-details');
+      const headlinesDiv = document.getElementById('news-headlines');
 
-      recommendationDiv.textContent = 'Loading...';
+      recommendationDiv.innerHTML = '<div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>';
       detailsDiv.textContent = '';
+      headlinesDiv.textContent = '';
 
       try {
         const response = await fetch('/analyze', {
@@ -137,15 +160,32 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ symbol })
         });
-        const data = await response.json();
-        if (data.error) {
-          recommendationDiv.textContent = `Error: ${data.error}`;
-        } else {
-          recommendationDiv.textContent = `Recommendation: ${data.analysis.recommendation}`;
-          detailsDiv.textContent = JSON.stringify(data.analysis, null, 2);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          recommendationDiv.textContent = `❌ Error: ${errorData.error}`;
+          return;
         }
+
+        const data = await response.json();
+        recommendationDiv.textContent = `✅ Recommendation: ${data.recommendation}`;
+        detailsDiv.textContent = `
+RSI: ${data.rsi.toFixed(2)}
+MACD Histogram: ${data.macd_hist.toFixed(2)}
+Sentiment Score: ${data.sentiment_score.toFixed(2)}
+        `;
+
+        const headlines = data.headlines || [];
+        headlines.forEach(h => {
+          const item = document.createElement('div');
+          item.classList.add('news-item');
+          item.textContent = h;
+          headlinesDiv.appendChild(item);
+        });
+
       } catch (error) {
-        recommendationDiv.textContent = 'Error fetching analysis.';
+        recommendationDiv.textContent = '❌ Error fetching analysis.';
+        console.error(error);
       }
     });
   </script>

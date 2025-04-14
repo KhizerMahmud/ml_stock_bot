@@ -6,8 +6,10 @@ import pandas_ta as ta
 import requests
 from newsapi import NewsApiClient
 
-# --- Config ---
-NEWS_API_KEY = 'your_newsapi_key_here'  # Replace with your actual NewsAPI key
+# --- Load Environment Variables ---
+load_dotenv()
+NEWS_API_KEY = os.getenv("NEWS_API_KEY", NEWS_API_KEY)
+
 
 class StockBotApp:
     def __init__(self, root):
@@ -29,10 +31,14 @@ class StockBotApp:
         self.stock_entry = ttk.Entry(search_frame, width=40)
         self.stock_entry.pack(side=tk.LEFT, padx=5)
 
-        search_button = ttk.Button(search_frame, text="Analyze", command=self.analyze_stock)
+        search_button = ttk.Button(
+            search_frame, text="Analyze", command=self.analyze_stock
+        )
         search_button.pack(side=tk.LEFT)
 
-        self.recommendation_label = ttk.Label(self.root, text="", font=("Helvetica", 16))
+        self.recommendation_label = ttk.Label(
+            self.root, text="", font=("Helvetica", 16)
+        )
         self.recommendation_label.pack(pady=10)
 
         self.analysis_text = tk.Text(self.root, wrap="word", height=25, width=90)
@@ -50,13 +56,13 @@ class StockBotApp:
                 raise ValueError("No data found")
 
             # Technical indicators
-            stock_data['RSI'] = ta.rsi(stock_data['Close'], length=14)
-            macd = ta.macd(stock_data['Close'])
+            stock_data["RSI"] = ta.rsi(stock_data["Close"], length=14)
+            macd = ta.macd(stock_data["Close"])
             stock_data = pd.concat([stock_data, macd], axis=1)
 
             latest = stock_data.iloc[-1]
-            rsi = latest['RSI_14']
-            macd_hist = latest['MACDh_12_26_9']
+            rsi = latest["RSI_14"]
+            macd_hist = latest["MACDh_12_26_9"]
 
             # News headlines
             headlines = self.get_news(symbol)
@@ -97,7 +103,7 @@ class StockBotApp:
 
         return sum(sentiment_scores) / len(sentiment_scores)
 
-     def make_recommendation(self, rsi, macd_hist, sentiment_score):
+    def make_recommendation(self, rsi, macd_hist, sentiment_score):
         """
         Make a recommendation based on RSI, MACD, sentiment, and risk management.
         """
@@ -116,10 +122,13 @@ class StockBotApp:
 
     def get_news(self, symbol):
         try:
-            response = self.news_api.get_everything(q=symbol, language='en', sort_by='relevancy', page_size=5)
-            return [article['title'] for article in response['articles']]
+            response = self.news_api.get_everything(
+                q=symbol, language="en", sort_by="relevancy", page_size=5
+            )
+            return [article["title"] for article in response["articles"]]
         except Exception:
             return ["News unavailable or API limit reached."]
+
 
 if __name__ == "__main__":
     root = tk.Tk()
