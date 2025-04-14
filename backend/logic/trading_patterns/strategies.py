@@ -4,6 +4,8 @@ import numpy as np
 
 class TradingStrategies:
     def __init__(self, df):
+        if not all(col in df.columns for col in ["Timestamp", "High", "Low", "Close", "Volume"]):
+            raise ValueError("DataFrame must contain the columns: 'Timestamp', 'High', 'Low', 'Close', 'Volume'.")
         self.df = df
 
     def breakout_strategy(self):
@@ -12,10 +14,10 @@ class TradingStrategies:
         """
         breakout_signals = []
         for i in range(1, len(self.df)):
-            prev_high = self.df["High"].iloc[:i].max()
+            prev_high = self.df["High"].iloc[:i].max()  # Previous highest high
             if (
-                self.df["Close"].iloc[i] > prev_high
-                and self.df["Volume"].iloc[i] > self.df["Volume"].iloc[i - 1] * 1.5
+                self.df["Close"].iloc[i] > prev_high and
+                self.df["Volume"].iloc[i] > self.df["Volume"].iloc[i - 1] * 1.5  # Volume surge
             ):
                 breakout_signals.append((self.df["Timestamp"].iloc[i], "Breakout"))
         return breakout_signals
@@ -24,15 +26,10 @@ class TradingStrategies:
         """
         Detect bounce off VWAP line.
         """
-        self.df["VWAP"] = (self.df["Close"] * self.df["Volume"]).cumsum() / self.df[
-            "Volume"
-        ].cumsum()
+        self.df["VWAP"] = (self.df["Close"] * self.df["Volume"]).cumsum() / self.df["Volume"].cumsum()
         signals = []
         for i in range(1, len(self.df)):
-            if (
-                abs(self.df["Close"].iloc[i] - self.df["VWAP"].iloc[i]) < 0.2
-                and self.df["Close"].iloc[i] > self.df["VWAP"].iloc[i]
-            ):
+            if abs(self.df["Close"].iloc[i] - self.df["VWAP"].iloc[i]) < 0.2 and self.df["Close"].iloc[i] > self.df["VWAP"].iloc[i]:
                 signals.append((self.df["Timestamp"].iloc[i], "VWAP Bounce"))
         return signals
 
@@ -44,10 +41,7 @@ class TradingStrategies:
         self.df["EMA_long"] = self.df["Close"].ewm(span=long, adjust=False).mean()
         signals = []
         for i in range(1, len(self.df)):
-            if (
-                self.df["EMA_short"].iloc[i - 1] < self.df["EMA_long"].iloc[i - 1]
-                and self.df["EMA_short"].iloc[i] > self.df["EMA_long"].iloc[i]
-            ):
+            if self.df["EMA_short"].iloc[i - 1] < self.df["EMA_long"].iloc[i - 1] and self.df["EMA_short"].iloc[i] > self.df["EMA_long"].iloc[i]:
                 signals.append((self.df["Timestamp"].iloc[i], "Bullish EMA Crossover"))
         return signals
 
@@ -61,7 +55,7 @@ class TradingStrategies:
             B = self.df["High"].iloc[i - 2]
             C = self.df["Low"].iloc[i - 1]
             D = self.df["Close"].iloc[i]
-            if A < C < B and D > B:
+            if A < C < B and D > B:  # Simplified ABCD pattern
                 signals.append((self.df["Timestamp"].iloc[i], "ABCD Pattern"))
         return signals
 
