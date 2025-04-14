@@ -102,7 +102,7 @@
           <h4 class="text-success mb-3">📈 Analyze Stock</h4>
           <form id="stock-form">
             <div class="mb-3">
-              <input type="text" id="stock-symbol" class="form-control" placeholder="Enter Stock Symbol (e.g., AAPL)" required />
+              <input type="text" id="stock-symbol" class="form-control" placeholder="Enter Stock Symbol (e.g., AAPL)" required oninput="this.value = this.value.toUpperCase();" />
             </div>
             <div class="mb-3">
               <button type="submit" class="btn btn-success w-100">
