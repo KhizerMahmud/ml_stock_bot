@@ -1,9 +1,12 @@
+# routes.py
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import logging
-
 from backend.logic.decision_making import StockBotApp
 from backend.logic.database import StockDatabase
+import os
+from dotenv import load_dotenv
+import requests
 
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests (for local frontend on a different port)
@@ -28,9 +31,6 @@ def home():
 
 @app.route("/suggest", methods=["GET"])
 def suggest_stocks():
-    """
-    Suggest stock symbols based on user input (from Finnhub).
-    """
     query = request.args.get("query", "").strip()
     if not query:
         return jsonify({"suggestions": []})
@@ -41,7 +41,6 @@ def suggest_stocks():
     try:
         response = requests.get(url, params=params)
         data = response.json()
-        # Extract relevant fields (symbol + description)
         suggestions = [
             {"symbol": item["symbol"], "description": item["description"]}
             for item in data.get("result", [])
@@ -63,8 +62,12 @@ def analyze_stock():
             return jsonify({"error": "Please enter a stock symbol."}), 400
 
         logging.info(f"Analyzing stock: {symbol}")
-        stock_bot = StockBotApp(None)
+        stock_bot = StockBotApp()
         analysis = stock_bot.analyze_stock(symbol)
+        if "error" in analysis:
+            logging.error(f"Error analyzing stock: {analysis['error']}")
+            return jsonify({"error": analysis["error"]}), 400
+
         logging.info(f"Analysis result for {symbol}: {analysis}")
         return jsonify({"analysis": analysis})
 
