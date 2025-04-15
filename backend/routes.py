@@ -4,17 +4,17 @@ from flask_cors import CORS
 import logging
 from backend.logic.decision_making import StockBotApp
 from backend.logic.database import StockDatabase
-import os
-from dotenv import load_dotenv
 import requests
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests (for local frontend on a different port)
 db = StockDatabase()
 
 # --- Load Environment Variables ---
-load_dotenv()
-FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", FINNHUB_API_KEY)
+load_dotenv()  # Load environment variables from .env file
+FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY")
 
 # --- Logging Config ---
 logging.basicConfig(

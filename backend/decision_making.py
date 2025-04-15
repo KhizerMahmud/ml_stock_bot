@@ -5,7 +5,7 @@ import pandas_ta as ta
 from textblob import TextBlob
 from newsapi import NewsApiClient
 from strategies import TradingStrategies
-from trading_patterns import ( 
+from trading_patterns import (
     bull_flag,
     bear_flag,
     double_top,
@@ -22,7 +22,7 @@ from trading_patterns import (
     pennant,
     rounded_bottom,
     triple_top,
-    triple_bottom
+    triple_bottom,
 )
 
 # --- Load Environment Variables ---
@@ -109,10 +109,21 @@ class StockBotApp:
 
             # Combine all signals into a final recommendation
             recommendation = self.make_recommendation(
-                rsi, macd_hist, sentiment_score, breakout_signals, vwap_signals, ema_signals, 
-                bull_flag_signal, bear_flag_signal, double_top_signal, double_bottom_signal, 
-                head_and_shoulders_signal, inverse_head_and_shoulders_signal, 
-                cup_and_handle_signal, ascending_triangle_signal, descending_triangle_signal
+                rsi,
+                macd_hist,
+                sentiment_score,
+                breakout_signals,
+                vwap_signals,
+                ema_signals,
+                bull_flag_signal,
+                bear_flag_signal,
+                double_top_signal,
+                double_bottom_signal,
+                head_and_shoulders_signal,
+                inverse_head_and_shoulders_signal,
+                cup_and_handle_signal,
+                ascending_triangle_signal,
+                descending_triangle_signal,
             )
 
             # Display the results
@@ -147,10 +158,24 @@ class StockBotApp:
 
         return sum(sentiment_scores) / len(sentiment_scores)
 
-    def make_recommendation(self, rsi, macd_hist, sentiment_score, breakout_signals, vwap_signals, ema_signals, 
-                            bull_flag_signal, bear_flag_signal, double_top_signal, double_bottom_signal, 
-                            head_and_shoulders_signal, inverse_head_and_shoulders_signal, 
-                            cup_and_handle_signal, ascending_triangle_signal, descending_triangle_signal):
+    def make_recommendation(
+        self,
+        rsi,
+        macd_hist,
+        sentiment_score,
+        breakout_signals,
+        vwap_signals,
+        ema_signals,
+        bull_flag_signal,
+        bear_flag_signal,
+        double_top_signal,
+        double_bottom_signal,
+        head_and_shoulders_signal,
+        inverse_head_and_shoulders_signal,
+        cup_and_handle_signal,
+        ascending_triangle_signal,
+        descending_triangle_signal,
+    ):
         """
         Make a recommendation based on technical indicators, chart patterns, and sentiment.
         """
@@ -186,9 +211,19 @@ class StockBotApp:
             signals.append("Descending Triangle")
 
         # Decision logic
-        if rsi < 30 and macd_hist > 0 and sentiment_score > sentiment_threshold and "Breakout" in signals:
+        if (
+            rsi < 30
+            and macd_hist > 0
+            and sentiment_score > sentiment_threshold
+            and "Breakout" in signals
+        ):
             return "BUY (Low RSI, Positive Sentiment, Breakout)"
-        elif rsi > 70 and macd_hist < 0 and sentiment_score < -sentiment_threshold and "Head and Shoulders" in signals:
+        elif (
+            rsi > 70
+            and macd_hist < 0
+            and sentiment_score < -sentiment_threshold
+            and "Head and Shoulders" in signals
+        ):
             return "SELL (High RSI, Negative Sentiment, Head and Shoulders)"
         elif abs(sentiment_score) < risk_tolerance:
             return "HOLD (Neutral Sentiment)"
