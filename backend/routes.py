@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import logging
-from backend.logic.decision_making import StockBotApp
+from backend.decision_making import StockBotApp
 from backend.logic.database import StockDatabase
 import requests
 from dotenv import load_dotenv

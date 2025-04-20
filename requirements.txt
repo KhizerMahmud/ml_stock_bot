@@ -1,0 +1,13 @@
+flask
+flask-cors
+yfinance
+pandas
+pandas-ta
+matplotlib
+textblob
+newsapi-python
+python-dotenv
+tk
+
+
+# run pip install -r requirements.txt to install all the dependencies

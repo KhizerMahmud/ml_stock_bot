@@ -8,136 +8,140 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body.light-mode {
-      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      background: #f5f7fa;
       color: #000;
     }
-
     body.dark-mode {
       background: #121212;
       color: #e0e0e0;
     }
-
-    body.dark-mode .text-success {
-      color: white !important;
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: #ffffff;
+      color: #000;
     }
-
-    .stock-card {
-      max-width: 800px;
-      width: 100%;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.05);
-      overflow: hidden;
+    body.dark-mode .card {
+      background: #1e1e1e;
+      color: #e0e0e0;
     }
-
-    .stock-header {
-      background-color: #198754;
-      color: white;
-      padding: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .stock-body {
-      padding: 3rem 2rem;
-      background-color: #ffffff;
-    }
-
-    body.dark-mode .stock-body {
-      background-color: #1e1e1e;
-    }
-
     .form-control, .btn {
       border-radius: 0.5rem;
     }
-
-    .analysis-text {
-      white-space: pre-line;
+    .form-control {
+      background: #fff;
+      color: #000;
     }
-
+    body.dark-mode .form-control {
+      background: #2b2b2b;
+      color: #e0e0e0;
+      border: 1px solid #555;
+    }
+    .recommendation-icon {
+      font-size: 4rem;
+    }
+    .recommendation-text {
+      font-size: 2rem;
+      font-weight: bold;
+    }
     footer {
       text-align: center;
       font-size: 0.9rem;
       padding: 1rem;
-      background: #f8f9fa;
-      border-top: 1px solid #dee2e6;
-      color: #333;
+      color: #555;
     }
-
     body.dark-mode footer {
+      color: #e0e0e0;
+    }
+    .stock-chart {
+      background: #fff;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+    }
+    body.dark-mode .stock-chart {
       background: #1e1e1e;
-      border-color: #333;
-      color: #ffffff;
+      color: #e0e0e0;
     }
-
-    .news-list {
-      margin-top: 1.5rem;
-      padding-left: 0.5rem;
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
     }
-
-    .news-item {
-      border-left: 4px solid #198754;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1rem;
-      background-color: #f1fdf6;
-      border-radius: 0.5rem;
+    .analysis-reason {
+      color: #555; /* Default color for light mode */
     }
-
-    body.dark-mode .news-item {
-      background-color: #1e2e28;
+    body.dark-mode .analysis-reason {
+      color: #e0e0e0; /* White text for dark mode */
     }
   </style>
 </head>
 <body class="light-mode">
   <div class="container py-5">
-    <div class="card stock-card mx-auto">
-      <div class="stock-header">
-        <div class="d-flex align-items-center gap-3">
-          <i class="bi bi-graph-up-arrow fs-1"></i>
-          <h1 class="mb-0">Smart Stock Advisor</h1>
-        </div>
-        <div class="form-check form-switch text-white">
-          <input class="form-check-input" type="checkbox" id="toggle-mode">
-          <label class="form-check-label" for="toggle-mode"><i id="mode-icon" class="bi bi-moon-fill"></i></label>
-        </div>
+    <!-- Title and Dark Mode Toggle in Same Line -->
+    <div class="title-row">
+      <h1>Smart Stock Advisor</h1>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="toggle-mode">
+        <label class="form-check-label" for="toggle-mode">
+          <i id="mode-icon" class="bi bi-moon-fill"></i>
+        </label>
       </div>
-      <div class="stock-body">
-        <div class="mb-5">
-          <h4 class="text-success mb-3">📈 Analyze Stock</h4>
-          <form id="stock-form">
-            <div class="mb-3">
-              <input type="text" id="stock-symbol" class="form-control" placeholder="Enter Stock Symbol (e.g., AAPL)" required oninput="this.value = this.value.toUpperCase();" />
-            </div>
-            <div class="mb-3">
-              <button type="submit" class="btn btn-success w-100">
-                <i class="bi bi-search"></i> Analyze
-              </button>
-            </div>
-          </form>
-        </div>
-        <hr class="my-4">
-        <div>
-          <h4 class="text-success mb-3">🧠 Analysis Result</h4>
-          <div id="recommendation" class="fw-bold my-3 text-primary"></div>
-          <div id="analysis-details" class="analysis-text mb-4"></div>
-          <div id="news-headlines" class="news-list"></div>
-        </div>
-      </div>
-      <footer>
-        &copy; 2025 Stock Bot. All rights reserved.
-      </footer>
     </div>
+
+    <div class="row g-4">
+      <!-- Left Side -->
+      <div class="col-md-8">
+        <div class="card p-4">
+          <h4 class="mb-4">📈 Analyze Stock</h4>
+          <form id="stock-form" class="d-flex">
+            <input type="text" id="stock-symbol" class="form-control me-2" placeholder="Enter Stock Symbol (e.g., AAPL)" required oninput="this.value = this.value.toUpperCase();">
+            <button type="submit" class="btn btn-success">
+              Analyze
+            </button>
+          </form>
+
+          <div class="stock-chart mt-4" id="chart-area">
+            📊 Stock Chart
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side -->
+      <div class="col-md-4">
+        <div class="card p-4 text-center">
+          <h4 class="mb-4">🧠 Analysis Result</h4>
+          <div id="recommendation-icon" class="recommendation-icon mb-3">
+            <i class="bi bi-dash-circle-fill text-secondary"></i>
+          </div>
+          <div id="recommendation-text" class="recommendation-text mb-2">Waiting...</div>
+          <div id="analysis-reason" class="analysis-reason"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5">
+      &copy; 2025 Smart Stock Advisor. All rights reserved.
+    </footer>
   </div>
 
   <script>
+    // Dark mode toggle
     const modeToggle = document.getElementById('toggle-mode');
     const body = document.body;
     const icon = document.getElementById('mode-icon');
-
+  
     modeToggle.addEventListener('change', () => {
       body.classList.toggle('dark-mode');
       body.classList.toggle('light-mode');
-
+  
       if (body.classList.contains('dark-mode')) {
         icon.classList.remove('bi-moon-fill');
         icon.classList.add('bi-sun-fill');
@@ -146,52 +150,81 @@
         icon.classList.add('bi-moon-fill');
       }
     });
-
+  
+    // --- WAITING... animation ---
+    const recommendationText = document.getElementById('recommendation-text');
+    let waitingInterval;
+    let waitingDots = 0;
+  
+    function startWaitingAnimation() {
+      waitingInterval = setInterval(() => {
+        waitingDots = (waitingDots + 1) % 4; // Cycle from 0 to 3 dots
+        recommendationText.textContent = "Waiting" + ".".repeat(waitingDots);
+      }, 500); // Every half second
+    }
+  
+    function stopWaitingAnimation() {
+      clearInterval(waitingInterval);
+    }
+  
+    // Start waiting animation immediately on page load
+    startWaitingAnimation();
+  
+    // Form submit
     document.getElementById('stock-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      stopWaitingAnimation(); // Stop the waiting dots animation
+  
       const symbol = document.getElementById('stock-symbol').value.toUpperCase();
-      const recommendationDiv = document.getElementById('recommendation');
-      const detailsDiv = document.getElementById('analysis-details');
-      const headlinesDiv = document.getElementById('news-headlines');
-
-      recommendationDiv.innerHTML = '<div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>';
-      detailsDiv.textContent = '';
-      headlinesDiv.textContent = '';
-
+      const recommendationIcon = document.getElementById('recommendation-icon');
+      const analysisReason = document.getElementById('analysis-reason');
+  
+      recommendationIcon.innerHTML = '<div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>';
+      recommendationText.textContent = 'Analyzing...';
+      analysisReason.textContent = '';
+  
       try {
         const response = await fetch('/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ symbol })
         });
-
+  
         if (!response.ok) {
           const errorData = await response.json();
-          recommendationDiv.textContent = `❌ Error: ${errorData.error}`;
+          recommendationIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+          recommendationText.textContent = 'Error';
+          analysisReason.textContent = errorData.error || "An error occurred.";
           return;
         }
-
+  
         const data = await response.json();
-        recommendationDiv.textContent = `✅ Recommendation: ${data.recommendation}`;
-        detailsDiv.textContent = `
-RSI: ${data.rsi.toFixed(2)}
-MACD Histogram: ${data.macd_hist.toFixed(2)}
-Sentiment Score: ${data.sentiment_score.toFixed(2)}
-        `;
-
-        const headlines = data.headlines || [];
-        headlines.forEach(h => {
-          const item = document.createElement('div');
-          item.classList.add('news-item');
-          item.textContent = h;
-          headlinesDiv.appendChild(item);
-        });
-
+        const rec = data.recommendation.toUpperCase();
+  
+        if (rec.includes('BUY')) {
+          recommendationIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+          recommendationText.textContent = 'BUY';
+        } else if (rec.includes('SELL')) {
+          recommendationIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+          recommendationText.textContent = 'SELL';
+        } else if (rec.includes('HOLD')) {
+          recommendationIcon.innerHTML = '<i class="bi bi-pause-circle-fill text-warning"></i>';
+          recommendationText.textContent = 'HOLD';
+        } else {
+          recommendationIcon.innerHTML = '<i class="bi bi-dash-circle-fill text-secondary"></i>';
+          recommendationText.textContent = rec;
+        }
+  
+        analysisReason.textContent = `Reason: ${data.reason || 'No details provided.'}`;
+  
       } catch (error) {
-        recommendationDiv.textContent = '❌ Error fetching analysis 😔';
+        recommendationIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+        recommendationText.textContent = 'Error';
+        analysisReason.textContent = 'Could not fetch analysis.';
         console.error(error);
       }
     });
   </script>
+  
 </body>
 </html>
