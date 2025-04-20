@@ -84,7 +84,6 @@
       display: inline-block;
       min-width: 0.9em;
     }
-
   </style>
 </head>
 <body class="light-mode">
@@ -127,7 +126,7 @@
           </div>
           <div id="recommendation-text" class="recommendation-text mb-2">
             Waiting<span id="waiting-dots">...</span>
-          </div>          
+          </div>  
           <div id="analysis-reason" class="analysis-reason"></div>
         </div>
       </div>
@@ -158,20 +157,20 @@
       }
     });
   
-    const waitingDotsSpan = document.getElementById('waiting-dots');
+    // --- WAITING... animation ---
+    const recommendationText = document.getElementById('recommendation-text');
     let waitingInterval;
     let waitingDots = 0;
-
+  
     function startWaitingAnimation() {
       waitingInterval = setInterval(() => {
-        waitingDots = (waitingDots + 1) % 4;
-        waitingDotsSpan.textContent = ".".repeat(waitingDots);
-      }, 500);
+        waitingDots = (waitingDots + 1) % 4; // Cycle from 0 to 3 dots
+        recommendationText.textContent = "Waiting" + ".".repeat(waitingDots);
+      }, 500); // Every half second
     }
-
+  
     function stopWaitingAnimation() {
       clearInterval(waitingInterval);
-      waitingDotsSpan.textContent = "";
     }
   
     // Start waiting animation immediately on page load
