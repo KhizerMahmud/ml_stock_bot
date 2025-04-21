@@ -7,88 +7,30 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    body.light-mode {
-      background: #f5f7fa;
-      color: #000;
-    }
-    body.dark-mode {
-      background: #121212;
-      color: #e0e0e0;
-    }
-    .card {
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      background: #ffffff;
-      color: #000;
-    }
-    body.dark-mode .card {
-      background: #1e1e1e;
-      color: #e0e0e0;
-    }
-    .form-control, .btn {
-      border-radius: 0.5rem;
-    }
-    .form-control {
-      background: #fff;
-      color: #000;
-    }
-    body.dark-mode .form-control {
-      background: #2b2b2b;
-      color: #e0e0e0;
-      border: 1px solid #555;
-    }
-    .recommendation-icon {
-      font-size: 4rem;
-    }
-    .recommendation-text {
-      font-size: 2rem;
-      font-weight: bold;
-    }
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      padding: 1rem;
-      color: #555;
-    }
-    body.dark-mode footer {
-      color: #e0e0e0;
-    }
-    .stock-chart {
-      background: #fff;
-      border-radius: 0.75rem;
-      padding: 1rem;
-      margin-top: 1rem;
-      height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #888;
-    }
-    body.dark-mode .stock-chart {
-      background: #1e1e1e;
-      color: #e0e0e0;
-    }
-    .title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    .analysis-reason {
-      color: #555; /* Default color for light mode */
-    }
-    body.dark-mode .analysis-reason {
-      color: #e0e0e0; /* White text for dark mode */
-    }
-    #waiting-dots {
-      display: inline-block;
-      min-width: 0.9em;
-    }
+    body.light-mode { background: #f5f7fa; color: #000; }
+    body.dark-mode { background: #121212; color: #e0e0e0; }
+    .card { border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #ffffff; color: #000; }
+    body.dark-mode .card { background: #1e1e1e; color: #e0e0e0; }
+    .form-control, .btn { border-radius: 0.5rem; }
+    .form-control { background: #fff; color: #000; }
+    body.dark-mode .form-control { background: #2b2b2b; color: #e0e0e0; border: 1px solid #555; }
+    .recommendation-icon { font-size: 4rem; }
+    .recommendation-text { font-size: 2rem; font-weight: bold; }
+    footer { text-align: center; font-size: 0.9rem; padding: 1rem; color: #555; }
+    body.dark-mode footer { color: #e0e0e0; }
+    .stock-chart { background: #fff; border-radius: 0.75rem; padding: 1rem; margin-top: 1rem; height: 200px; display: flex; align-items: center; justify-content: center; color: #888; overflow: hidden; }
+    body.dark-mode .stock-chart { background: #1e1e1e; color: #e0e0e0; }
+    .title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .analysis-reason { color: #555; }
+    body.dark-mode .analysis-reason { color: #e0e0e0; }
+    #waiting-dots { display: inline-block; min-width: 0.9em; }
+    .suggestions { max-height: 200px; overflow-y: auto; margin-top: 5px; padding: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 0.5rem; position: absolute; width: 100%; z-index: 10; }
+    .suggestion-item { padding: 8px 12px; cursor: pointer; }
+    .suggestion-item:hover { background-color: #f1f1f1; }
   </style>
 </head>
 <body class="light-mode">
-  <div class="container py-5">
-    <!-- Title and Dark Mode Toggle in Same Line -->
+  <div class="container py-3">
     <div class="title-row">
       <h1>Smart Stock Advisor</h1>
       <div class="form-check form-switch">
@@ -102,135 +44,134 @@
     <div class="row g-4">
       <!-- Left Side -->
       <div class="col-md-8">
-        <div class="card p-4">
-          <h4 class="mb-4">📈 Analyze Stock</h4>
-          <form id="stock-form" class="d-flex">
+        <div class="card p-4 mb-4">
+          <h4 class="mb-3">📈 Analyze Stock</h4>
+          <form id="stock-form" class="d-flex position-relative">
             <input type="text" id="stock-symbol" class="form-control me-2" placeholder="Enter Stock Symbol (e.g., AAPL)" required oninput="this.value = this.value.toUpperCase();">
-            <button type="submit" class="btn btn-success">
-              Analyze
-            </button>
+            <button type="submit" class="btn btn-success">View Chart</button>
           </form>
+          <div id="suggestions-container" class="suggestions" style="display: none;"></div>
+        </div>
 
-          <div class="stock-chart mt-4" id="chart-area">
-            📊 Stock Chart
+        <div id="chart-section" class="card p-4 mb-4" style="display:none;">
+          <h4 class="mb-3">🕒 Select Time Interval</h4>
+          <div class="d-flex gap-2 align-items-center mb-3">
+            <select id="interval-select" class="form-select">
+              <option disabled selected value="">Choose Interval</option>
+              <option value="1min">1 Minute</option>
+              <option value="5min">5 Minutes</option>
+              <option value="15min">15 Minutes</option>
+              <option value="30min">30 Minutes</option>
+              <option value="1hour">1 Hour</option>
+            </select>
+            <button id="analyze-btn" class="btn btn-success" disabled>Analyze</button>
           </div>
+          <div class="stock-chart" id="chart-area">📊 Stock Chart</div>
         </div>
       </div>
 
       <!-- Right Side -->
       <div class="col-md-4">
-        <div class="card p-4 text-center">
+        <div class="card p-4 text-center" id="result-section">
           <h4 class="mb-4">🧠 Analysis Result</h4>
-          <div id="recommendation-icon" class="recommendation-icon mb-3">
-            <i class="bi bi-dash-circle-fill text-secondary"></i>
-          </div>
-          <div id="recommendation-text" class="recommendation-text mb-2">
-            Waiting<span id="waiting-dots">...</span>
-          </div>  
+          <div id="recommendation-icon" class="recommendation-icon mb-3"><i class="bi bi-dash-circle-fill text-secondary"></i></div>
+          <div id="recommendation-text" class="recommendation-text mb-2">Waiting<span id="waiting-dots">...</span></div>
           <div id="analysis-reason" class="analysis-reason"></div>
         </div>
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="mt-5">
-      &copy; 2025 Smart Stock Advisor. All rights reserved.
-    </footer>
+    <footer class="mt-5">&copy; 2025 Smart Stock Advisor. All rights reserved.</footer>
   </div>
 
+  <!-- Popup Modal -->
+  <div class="modal fade" id="instructionModal" tabindex="-1" aria-labelledby="instructionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="instructionModalLabel">How This Works</h5>
+        </div>
+        <div class="modal-body">
+          <ul>
+            <li>Enter a valid stock symbol and click "View Chart"</li>
+            <li>The chart will load with recent price action</li>
+            <li>Select a time interval within 15 seconds</li>
+            <li>Click "Analyze" to get a BUY / SELL / HOLD recommendation</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Got It</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Dark mode toggle
-    const modeToggle = document.getElementById('toggle-mode');
-    const body = document.body;
-    const icon = document.getElementById('mode-icon');
-  
-    modeToggle.addEventListener('change', () => {
-      body.classList.toggle('dark-mode');
-      body.classList.toggle('light-mode');
-  
-      if (body.classList.contains('dark-mode')) {
-        icon.classList.remove('bi-moon-fill');
-        icon.classList.add('bi-sun-fill');
-      } else {
-        icon.classList.remove('bi-sun-fill');
-        icon.classList.add('bi-moon-fill');
-      }
-    });
-  
-    // --- WAITING... animation ---
-    const recommendationText = document.getElementById('recommendation-text');
-    let waitingInterval;
-    let waitingDots = 0;
-  
-    function startWaitingAnimation() {
-      waitingInterval = setInterval(() => {
-        waitingDots = (waitingDots + 1) % 4; // Cycle from 0 to 3 dots
-        recommendationText.textContent = "Waiting" + ".".repeat(waitingDots);
-      }, 500); // Every half second
-    }
-  
-    function stopWaitingAnimation() {
-      clearInterval(waitingInterval);
-    }
-  
-    // Start waiting animation immediately on page load
-    startWaitingAnimation();
-  
-    // Form submit
-    document.getElementById('stock-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      stopWaitingAnimation(); // Stop the waiting dots animation
-  
-      const symbol = document.getElementById('stock-symbol').value.toUpperCase();
-      const recommendationIcon = document.getElementById('recommendation-icon');
-      const analysisReason = document.getElementById('analysis-reason');
-  
-      recommendationIcon.innerHTML = '<div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>';
-      recommendationText.textContent = 'Analyzing...';
-      analysisReason.textContent = '';
-  
-      try {
-        const response = await fetch('/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ symbol })
-        });
-  
-        if (!response.ok) {
-          const errorData = await response.json();
+    document.addEventListener("DOMContentLoaded", function() {
+      new bootstrap.Modal(document.getElementById('instructionModal')).show();
+
+      const modeToggle = document.getElementById('toggle-mode');
+      const body = document.body;
+      const icon = document.getElementById('mode-icon');
+      const recommendationText = document.getElementById('recommendation-text');
+      const chartSection = document.getElementById("chart-section");
+      const intervalSelect = document.getElementById("interval-select");
+      const analyzeBtn = document.getElementById("analyze-btn");
+      const stockSymbolInput = document.getElementById("stock-symbol");
+      const suggestionsContainer = document.getElementById("suggestions-container");
+
+      modeToggle.addEventListener('change', () => {
+        body.classList.toggle('dark-mode');
+        body.classList.toggle('light-mode');
+        icon.classList.toggle('bi-sun-fill');
+        icon.classList.toggle('bi-moon-fill');
+      });
+
+      document.getElementById('stock-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        chartSection.style.display = 'block';
+        document.getElementById("chart-area").innerHTML = "<em> Loading chart... 📊</em>";
+      });
+
+      intervalSelect.addEventListener("change", () => {
+        analyzeBtn.disabled = false;
+      });
+
+      analyzeBtn.addEventListener("click", async () => {
+        const symbol = stockSymbolInput.value.toUpperCase();
+        const interval = intervalSelect.value;
+        const recommendationIcon = document.getElementById("recommendation-icon");
+        const analysisReason = document.getElementById("analysis-reason");
+
+        recommendationIcon.innerHTML = '<div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>';
+        recommendationText.textContent = 'Analyzing...';
+        analysisReason.textContent = '';
+
+        try {
+          const response = await fetch('/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ symbol, interval })
+          });
+
+          const data = await response.json();
+          document.getElementById("result-section").style.display = "block";
+
+          recommendationIcon.innerHTML =
+            data.recommendation === "BUY" ? '<i class="bi bi-check-circle-fill text-success"></i>' :
+            data.recommendation === "SELL" ? '<i class="bi bi-x-circle-fill text-danger"></i>' :
+            '<i class="bi bi-pause-circle-fill text-warning"></i>';
+
+          recommendationText.textContent = data.recommendation;
+          analysisReason.textContent = data.reason || "No reason provided.";
+        } catch (error) {
           recommendationIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
           recommendationText.textContent = 'Error';
-          analysisReason.textContent = errorData.error || "An error occurred.";
-          return;
+          analysisReason.textContent = 'Could not fetch analysis.';
         }
-  
-        const data = await response.json();
-        const rec = data.recommendation.toUpperCase();
-  
-        if (rec.includes('BUY')) {
-          recommendationIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
-          recommendationText.textContent = 'BUY';
-        } else if (rec.includes('SELL')) {
-          recommendationIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
-          recommendationText.textContent = 'SELL';
-        } else if (rec.includes('HOLD')) {
-          recommendationIcon.innerHTML = '<i class="bi bi-pause-circle-fill text-warning"></i>';
-          recommendationText.textContent = 'HOLD';
-        } else {
-          recommendationIcon.innerHTML = '<i class="bi bi-dash-circle-fill text-secondary"></i>';
-          recommendationText.textContent = rec;
-        }
-  
-        analysisReason.textContent = `Reason: ${data.reason || 'No details provided.'}`;
-  
-      } catch (error) {
-        recommendationIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
-        recommendationText.textContent = 'Error';
-        analysisReason.textContent = 'Could not fetch analysis.';
-        console.error(error);
-      }
+      });
     });
   </script>
-  
 </body>
 </html>
