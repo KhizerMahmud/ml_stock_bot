@@ -130,14 +130,24 @@
         if (!stockSymbol) {
           alert("Please enter a valid stock symbol.");
         }
+        toggleAnalyzeButton();
       });
 
       // Enable "Analyze" button when a time interval is selected
       intervalSelect.addEventListener("change", function () {
         timeInterval = intervalSelect.value;
         console.log("Time Interval Selected:", timeInterval);
-        sendDataBtn.disabled = !stockSymbol; // Ensure stockSymbol is set before enabling
+        toggleAnalyzeButton();
       });
+
+      // Function to enable/disable Analyze button
+      function toggleAnalyzeButton() {
+        if (stockSymbol && timeInterval) {
+          sendDataBtn.disabled = false; // Enable button if both symbol and interval are set
+        } else {
+          sendDataBtn.disabled = true; // Disable if either is missing
+        }
+      }
 
       // Send stock symbol, time interval, and period to the backend
       sendDataBtn.addEventListener("click", async function () {
