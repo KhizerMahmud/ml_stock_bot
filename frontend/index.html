@@ -9,28 +9,48 @@
   <style>
     body.light-mode { background: #f5f7fa; color: #000; }
     body.dark-mode { background: #121212; color: #e0e0e0; }
-    .card { border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #ffffff; color: #000; }
+    .card { border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #ffffff; color: #000; min-height: 150px; padding: 1rem; } /* Reduced padding for slimness */
     body.dark-mode .card { background: #1e1e1e; color: #e0e0e0; }
-    .form-control, .btn { border-radius: 0.5rem; }
-    .form-control { background: #fff; color: #000; }
-    body.dark-mode .form-control { background: #2b2b2b; color: #e0e0e0; border: 1px solid #555; }
+    .form-control, .form-select, .btn { border-radius: 0.5rem; padding: 0.5rem 1rem; font-size: 1rem; }
+    .form-control, .form-select { background: #fff; color: #000; border: 1px solid #ccc; }
+    body.dark-mode .form-control, body.dark-mode .form-select { background: #2b2b2b; color: #e0e0e0; border: 1px solid #555; }
+    .btn { background-color: #13742a; color: #fff; border: none; }
+    .btn:disabled { background-color: #ccc; color: #666; }
+    .btn:hover:not(:disabled) { background-color: #13742a; }
     .recommendation-icon { font-size: 4rem; }
     .recommendation-text { font-size: 2rem; font-weight: bold; }
     footer { text-align: center; font-size: 0.9rem; padding: 1rem; color: #555; }
     body.dark-mode footer { color: #e0e0e0; }
-    .stock-chart { background: #fff; border-radius: 0.75rem; padding: 1rem; margin-top: 1rem; height: 200px; display: flex; align-items: center; justify-content: center; color: #888; overflow: hidden; }
+    .stock-chart { background: #fff; border-radius: 0.75rem; padding: 1rem; height: 300px; display: flex; align-items: center; justify-content: center; color: #888; }
     body.dark-mode .stock-chart { background: #1e1e1e; color: #e0e0e0; }
-    .title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; } /* Reduced margin */
     .analysis-reason { color: #555; }
     body.dark-mode .analysis-reason { color: #e0e0e0; }
-    #waiting-dots { display: inline-block; min-width: 0.9em; }
-    .suggestions { max-height: 200px; overflow-y: auto; margin-top: 5px; padding: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 0.5rem; position: absolute; width: 100%; z-index: 10; }
-    .suggestion-item { padding: 8px 12px; cursor: pointer; }
-    .suggestion-item:hover { background-color: #f1f1f1; }
+    .card.slim-card { padding: 1rem; }
+
+    /* Keep the card header styling */
+    .card h4 {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    /* Dropdown arrow styling */
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='gray' d='M1.5 5.5l6 6 6-6h-12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+    }
+
+    .form-select {
+      padding-right: 2.5rem;
+    }
   </style>
 </head>
 <body class="light-mode">
-  <div class="container py-3">
+  <div class="container py-5">
     <div class="title-row">
       <h1>Smart Stock Advisor</h1>
       <div class="form-check form-switch">
@@ -44,16 +64,17 @@
     <div class="row g-4">
       <!-- Left Side -->
       <div class="col-md-8">
-        <div class="card p-4 mb-4">
+        <!-- Analyze Stock Container -->
+        <div class="card slim-card mb-4">
           <h4 class="mb-3">📈 Analyze Stock</h4>
-          <form id="stock-form" class="d-flex position-relative">
-            <input type="text" id="stock-symbol" class="form-control me-2" placeholder="Enter Stock Symbol (e.g., AAPL)" required oninput="this.value = this.value.toUpperCase();">
-            <button type="submit" class="btn btn-success">View Chart</button>
+          <form id="stock-form" class="d-flex">
+            <input type="text" id="stock-symbol" class="form-control me-2" placeholder="Stock Symbol (e.g., AAPL)" required oninput="this.value = this.value.toUpperCase();">
+            <button type="submit" class="btn btn-success">Enter</button>
           </form>
-          <div id="suggestions-container" class="suggestions" style="display: none;"></div>
         </div>
 
-        <div id="chart-section" class="card p-4 mb-4" style="display:none;">
+        <!-- Select Time Interval Container -->
+        <div class="card slim-card mb-4">
           <h4 class="mb-3">🕒 Select Time Interval</h4>
           <div class="d-flex gap-2 align-items-center mb-3">
             <select id="interval-select" class="form-select">
@@ -66,7 +87,12 @@
             </select>
             <button id="analyze-btn" class="btn btn-success" disabled>Analyze</button>
           </div>
-          <div class="stock-chart" id="chart-area">📊 Stock Chart</div>
+        </div>
+
+        <!-- Stock Chart Container -->
+        <div class="card slim-card mb-4">
+          <h4 class="mb-3">📊 Stock Chart</h4>
+          <div class="stock-chart" id="chart-area">📊 Stock Chart will be displayed here</div>
         </div>
       </div>
 
@@ -75,7 +101,7 @@
         <div class="card p-4 text-center" id="result-section">
           <h4 class="mb-4">🧠 Analysis Result</h4>
           <div id="recommendation-icon" class="recommendation-icon mb-3"><i class="bi bi-dash-circle-fill text-secondary"></i></div>
-          <div id="recommendation-text" class="recommendation-text mb-2">Waiting<span id="waiting-dots">...</span></div>
+          <div id="recommendation-text" class="recommendation-text mb-2">Waiting...</div>
           <div id="analysis-reason" class="analysis-reason"></div>
         </div>
       </div>
@@ -84,93 +110,79 @@
     <footer class="mt-5">&copy; 2025 Smart Stock Advisor. All rights reserved.</footer>
   </div>
 
-  <!-- Popup Modal -->
-  <div class="modal fade" id="instructionModal" tabindex="-1" aria-labelledby="instructionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="instructionModalLabel">How This Works</h5>
-        </div>
-        <div class="modal-body">
-          <ul>
-            <li>Enter a valid stock symbol and click "View Chart"</li>
-            <li>The chart will load with recent price action</li>
-            <li>Select a time interval within 15 seconds</li>
-            <li>Click "Analyze" to get a BUY / SELL / HOLD recommendation</li>
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Got It</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      new bootstrap.Modal(document.getElementById('instructionModal')).show();
-
-      const modeToggle = document.getElementById('toggle-mode');
-      const body = document.body;
-      const icon = document.getElementById('mode-icon');
-      const recommendationText = document.getElementById('recommendation-text');
-      const chartSection = document.getElementById("chart-section");
+    document.addEventListener("DOMContentLoaded", function () {
+      const stockForm = document.getElementById("stock-form");
       const intervalSelect = document.getElementById("interval-select");
-      const analyzeBtn = document.getElementById("analyze-btn");
-      const stockSymbolInput = document.getElementById("stock-symbol");
-      const suggestionsContainer = document.getElementById("suggestions-container");
+      const sendDataBtn = document.getElementById("analyze-btn");
 
-      modeToggle.addEventListener('change', () => {
-        body.classList.toggle('dark-mode');
-        body.classList.toggle('light-mode');
-        icon.classList.toggle('bi-sun-fill');
-        icon.classList.toggle('bi-moon-fill');
-      });
+      let stockSymbol = ""; // Initialize stockSymbol
+      let timeInterval = "";
+      let period = "1d"; // Default period for stock data
 
-      document.getElementById('stock-form').addEventListener('submit', function(e) {
+      // Capture stock symbol when "Enter" is clicked
+      stockForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        chartSection.style.display = 'block';
-        document.getElementById("chart-area").innerHTML = "<em> Loading chart... 📊</em>";
+        stockSymbol = document.getElementById("stock-symbol").value.trim().toUpperCase(); // Trim and convert to uppercase
+        console.log("Stock Symbol Entered:", stockSymbol);
+
+        if (!stockSymbol) {
+          alert("Please enter a valid stock symbol.");
+        }
       });
 
-      intervalSelect.addEventListener("change", () => {
-        analyzeBtn.disabled = false;
+      // Enable "Analyze" button when a time interval is selected
+      intervalSelect.addEventListener("change", function () {
+        timeInterval = intervalSelect.value;
+        console.log("Time Interval Selected:", timeInterval);
+        sendDataBtn.disabled = !stockSymbol; // Ensure stockSymbol is set before enabling
       });
 
-      analyzeBtn.addEventListener("click", async () => {
-        const symbol = stockSymbolInput.value.toUpperCase();
-        const interval = intervalSelect.value;
-        const recommendationIcon = document.getElementById("recommendation-icon");
-        const analysisReason = document.getElementById("analysis-reason");
+      // Send stock symbol, time interval, and period to the backend
+      sendDataBtn.addEventListener("click", async function () {
+        if (!stockSymbol) {
+          alert("Please enter a stock symbol before analyzing.");
+          return;
+        }
 
-        recommendationIcon.innerHTML = '<div class="spinner-border text-success" role="status"><span class="visually-hidden">Loading...</span></div>';
-        recommendationText.textContent = 'Analyzing...';
-        analysisReason.textContent = '';
+        const payload = {
+          symbol: stockSymbol,
+          interval: timeInterval,
+          period: period,
+        };
+
+        console.log("Sending data to backend:", payload);
 
         try {
-          const response = await fetch('/analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ symbol, interval })
+          const response = await fetch("http://127.0.0.1:5000/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
           });
 
           const data = await response.json();
-          document.getElementById("result-section").style.display = "block";
-
-          recommendationIcon.innerHTML =
-            data.recommendation === "BUY" ? '<i class="bi bi-check-circle-fill text-success"></i>' :
-            data.recommendation === "SELL" ? '<i class="bi bi-x-circle-fill text-danger"></i>' :
-            '<i class="bi bi-pause-circle-fill text-warning"></i>';
-
-          recommendationText.textContent = data.recommendation;
-          analysisReason.textContent = data.reason || "No reason provided.";
+          console.log("Response from backend:", data);
         } catch (error) {
-          recommendationIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
-          recommendationText.textContent = 'Error';
-          analysisReason.textContent = 'Could not fetch analysis.';
+          console.error("Error sending data to backend:", error);
         }
       });
+    });
+
+    // Toggle between light and dark mode
+    const toggleSwitch = document.getElementById("toggle-mode");
+    const modeIcon = document.getElementById("mode-icon");
+
+    toggleSwitch.addEventListener("change", function () {
+      if (this.checked) {
+        document.body.classList.add("dark-mode");
+        modeIcon.classList.remove("bi-moon-fill");
+        modeIcon.classList.add("bi-brightness-high-fill");
+      } else {
+        document.body.classList.remove("dark-mode");
+        modeIcon.classList.remove("bi-brightness-high-fill");
+        modeIcon.classList.add("bi-moon-fill");
+      }
     });
   </script>
 </body>
