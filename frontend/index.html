@@ -22,8 +22,22 @@
     .recommendation-text { font-size: 2rem; font-weight: bold; }
     footer { text-align: center; font-size: 0.9rem; padding: 1rem; color: #555; }
     body.dark-mode footer { color: #e0e0e0; }
-    .stock-chart { background: #fff; border-radius: 0.75rem; padding: 1rem; height: 300px; display: flex; align-items: center; justify-content: center; color: #888; }
-    body.dark-mode .stock-chart { background: #1e1e1e; color: #e0e0e0; }
+    .stock-chart {
+      background: #fff;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      height: 400px; /* Adjust height for the chart */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      overflow: hidden; /* Prevent overflow */
+      position: relative; /* Ensure proper positioning */
+    }
+    body.dark-mode .stock-chart {
+      background: #1e1e1e;
+      color: #e0e0e0;
+    }
     .title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; } /* Reduced margin */
     .analysis-reason { color: #555; }
     body.dark-mode .analysis-reason { color: #e0e0e0; }
@@ -91,6 +105,11 @@
               <option value="15min">15 Minutes</option>
               <option value="30min">30 Minutes</option>
               <option value="1hour">1 Hour</option>
+              <option value="2hours">2 Hours</option>
+              <option value="3hours">3 Hours</option>
+              <option value="4hours">4 Hours</option>
+
+
             </select>
             <button id="analyze-btn" class="btn btn-success" disabled>Analyze</button>
           </div>
@@ -99,7 +118,7 @@
         <!-- Stock Chart Container -->
         <div class="card slim-card mb-4">
           <h4 class="mb-3">📊 Stock Chart</h4>
-          <div class="stock-chart" id="chart-area">📊 Stock Chart will be displayed here</div>
+          <div class="stock-chart" id="chart-area"></div>
         </div>
       </div>
 
@@ -122,17 +141,19 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const stockForm = document.getElementById("stock-form");
       const intervalSelect = document.getElementById("interval-select");
       const sendDataBtn = document.getElementById("analyze-btn");
+      const resultSection = document.getElementById("result-section");
 
       let stockSymbol = ""; // Initialize stockSymbol
       let timeInterval = "";
       let period = "1d"; // Default period for stock data
 
-      // Capture stock symbol when "Enter" is clicked
       stockForm.addEventListener("submit", function (e) {
         e.preventDefault();
         stockSymbol = document.getElementById("stock-symbol").value.trim().toUpperCase(); // Trim and convert to uppercase
@@ -144,14 +165,12 @@
         toggleAnalyzeButton();
       });
 
-      // Enable "Analyze" button when a time interval is selected
       intervalSelect.addEventListener("change", function () {
         timeInterval = intervalSelect.value;
         console.log("Time Interval Selected:", timeInterval);
         toggleAnalyzeButton();
       });
 
-      // Function to enable/disable Analyze button
       function toggleAnalyzeButton() {
         if (stockSymbol && timeInterval) {
           sendDataBtn.disabled = false; // Enable button if both symbol and interval are set
@@ -160,7 +179,6 @@
         }
       }
 
-      // Send stock symbol, time interval, and period to the backend
       sendDataBtn.addEventListener("click", async function () {
         if (!stockSymbol) {
           alert("Please enter a stock symbol before analyzing.");
@@ -184,8 +202,56 @@
 
           const data = await response.json();
           console.log("Response from backend:", data);
+
+          // Handle errors from the backend
+          if (data.error) {
+            alert(data.error);
+            resultSection.innerHTML = "<p>Error: " + data.error + "</p>";
+          } else {
+            // Update the recommendation in the "Analysis Result" container
+            document.getElementById("recommendation-text").textContent = data.recommendation;
+            document.getElementById("recommendation-icon").innerHTML =
+              data.recommendation === "BUY"
+                ? '<i class="bi bi-arrow-up-circle-fill text-success"></i>'
+                : data.recommendation === "SELL"
+                ? '<i class="bi bi-arrow-down-circle-fill text-danger"></i>'
+                : '<i class="bi bi-dash-circle-fill text-secondary"></i>';
+
+            // Display candlestick data in the "Stock Chart" container
+            const chartArea = document.getElementById("chart-area");
+
+            // Prepare data for the Plotly candlestick chart
+            const candles = data.ohlcv;
+            const timestamps = candles.map(candle => candle.timestamp);
+            const opens = candles.map(candle => parseFloat(candle.open));
+            const highs = candles.map(candle => parseFloat(candle.high));
+            const lows = candles.map(candle => parseFloat(candle.low));
+            const closes = candles.map(candle => parseFloat(candle.close));
+
+            const plotlyData = [{
+              x: timestamps,
+              open: opens,
+              high: highs,
+              low: lows,
+              close: closes,
+              type: 'candlestick',
+              increasing: { line: { color: 'green' } },
+              decreasing: { line: { color: 'red' } },
+              xaxis: 'x',
+              yaxis: 'y'
+            }];
+
+            const layout = {
+              title: `Candlestick Chart for ${stockSymbol}`,
+              xaxis: { rangeslider: { visible: false } },
+              yaxis: { title: 'Price (USD)' }
+            };
+
+            Plotly.newPlot(chartArea, plotlyData, layout);
+          }
         } catch (error) {
           console.error("Error sending data to backend:", error);
+          alert("An error occurred while fetching data. Please try again.");
         }
       });
     });
@@ -206,5 +272,7 @@
       }
     });
   </script>
+
+
 </body>
 </html>
