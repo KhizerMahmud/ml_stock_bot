@@ -52,7 +52,7 @@ frontend/
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/stock_bot.git
+   git clone https://github.com/KhizerMahmud/ml_stock_bot.git
    cd stock_bot
    ```
 
