@@ -3,6 +3,9 @@
 Smart Stock Advisor is a web-based application that analyzes stock market data, detects technical patterns, and provides actionable recommendations (BUY, SELL, HOLD) using real-time data from the Twelve Data API. The app features a modern frontend, interactive candlestick charts, and a robust backend with pattern recognition and technical indicator calculations.
 
 ---
+## 📸 Screenshot
+<img width="1536" height="1024" alt="Stock Analysis Interface Snapshot" src="https://github.com/user-attachments/assets/cb7da0ca-44df-4685-9e68-507a2e1f55b3" />
+
 
 ## Features
 
